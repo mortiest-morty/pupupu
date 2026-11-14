@@ -22,87 +22,115 @@
 ```bash
 git clone <repository-url>
 cd qa-test-task
+```
 
 Создать виртуальное окружение:
 
-bash
+```bash
 python -m venv .venv
+```
+
 Активировать его.
 
 Linux/macOS:
 
-bash
+```bash
 source .venv/bin/activate
+```
+
 Windows:
 
-bash
+```bash
 .venv\Scripts\activate
+```
+
 Установить зависимости:
 
-bash
+```bash
 pip install -r requirements.txt
-Настройка переменных окружения
+```
+
+## Настройка переменных окружения
+
 Скопировать пример конфигурации.
 
 Linux/macOS:
 
-bash
+```bash
 cp .env.example .env
+```
+
 Windows:
 
-bash
+```bash
 copy .env.example .env
-Заполнить в .env реальные значения:
+```
 
-text
+Заполнить в `.env` реальные значения:
+
+```text
 GITHUB_USERNAME=your_github_username
 GITHUB_TOKEN=your_github_token
 GITHUB_REPOSITORY=qa-api-test
-GITHUB_REPOSITORY используется как префикс. Во время теста к нему добавляется уникальный суффикс, поэтому существующие репозитории не перезаписываются.
+```
 
-Запуск E2E-теста
+`GITHUB_REPOSITORY` используется как префикс. Во время теста к нему добавляется уникальный суффикс, поэтому существующие репозитории не перезаписываются.
+
+## Запуск E2E-теста
+
 По умолчанию Chrome запускается в headless-режиме:
 
-bash
+```bash
 pytest tests/test_e2e.py -v
-Чтобы увидеть работу браузера:
+```
+
+Чтобы увидеть работу браузера.
 
 Linux/macOS:
 
-bash
+```bash
 HEADLESS=false pytest tests/test_e2e.py -v
+```
+
 Windows PowerShell:
 
-powershell
+```powershell
 $env:HEADLESS="false"
 pytest tests/test_e2e.py -v
+```
+
 Selenium Manager автоматически подбирает подходящий ChromeDriver.
 
-Запуск GitHub API-теста
-bash
+## Запуск GitHub API-теста
+
+```bash
 pytest tests/test_api.py -v
+```
+
 Тест выполняет следующие операции:
 
-Создаёт публичный репозиторий.
+1. Создаёт публичный репозиторий.
+2. Получает список репозиториев пользователя.
+3. Проверяет наличие созданного репозитория.
+4. Проверяет, что репозиторий публичный.
+5. Удаляет временный репозиторий.
 
-Получает список репозиториев пользователя.
+Удаление выполняется в блоке `finally`, включая случаи падения проверки.
 
-Проверяет наличие созданного репозитория.
+## Запуск всех тестов
 
-Проверяет, что репозиторий публичный.
-
-Удаляет временный репозиторий.
-
-Удаление выполняется в блоке finally, включая случаи падения проверки.
-
-Запуск всех тестов
-bash
+```bash
 pytest -v
-Безопасность
-Файл .env не должен добавляться в Git. Он уже включён в .gitignore.
+```
 
-Примечание по GitHub API
+## Безопасность
+
+Файл `.env` не должен добавляться в Git. Он уже включён в `.gitignore`.
+
+## Примечание по GitHub API
+
 Для удаления репозитория токен должен иметь права администратора репозитория. Для Fine-grained token нужно разрешение:
 
-text
+```text
 Administration: Read and write
+```
